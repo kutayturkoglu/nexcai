@@ -1,0 +1,20 @@
+# --- Whisper.cpp ---
+whisper.cpp/
+!whisper.cpp/models/download-ggml-model.sh
+!whisper.cpp/README.md
+
+# Audio outputs
+*.wav.txt
+
+# Python cache & virtual envs
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.venv
+*.egg-info/
+
+# Build / logs
+build/
+logs/

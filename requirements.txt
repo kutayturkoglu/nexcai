@@ -1,6 +1,28 @@
-torch
-torchaudio
+# Core
+python-dotenv
+tqdm
+requests
+pathlib
 sounddevice
 numpy
-requests
-pyaudio
+
+# Whisper integration (for subprocess, optional Python bindings)
+openai-whisper  # only if you want to use Whisper via Python; otherwise, whisper.cpp handles it natively
+
+# Text-to-speech (Piper)
+piper-tts
+
+# LLM interface (local Ollama)
+ollama
+
+# CLI tools
+click
+colorama
+
+# Optional: testing and dev utilities
+pytest
+
+torch==2.4.1
+torchvision
+torchaudio
+

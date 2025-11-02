@@ -9,7 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from core.utils.llm_interface import LLMInterface
 from core.utils.credentials import load_token, save_token
-
+from core.memory.conversation_memory import ConversationMemory
 SCOPES = ["https://www.googleapis.com/auth/calendar"]
 TZ = pytz.timezone("Europe/Berlin")
 
@@ -19,6 +19,7 @@ class CalendarAgent:
         """Initialize the agent and connect to Google Calendar."""
         self.llm = LLMInterface(model="llama3:8b")
         self.service = self._connect()
+        self.memory = ConversationMemory(max_length=8)
 
     # ---------------------------------------------------------------
     # Connect to Google Calendar (WSL compatible)
@@ -215,9 +216,23 @@ class CalendarAgent:
     # Run the query
     # ---------------------------------------------------------------
     def run(self, query: str):
-        actions = self.interpret_query(query)
+        self.memory.add("user", query)
+        context = self.memory.get_context()
+        contextual_query = f"""
+            Previous conversation:
+            {context}
+
+            Current user message: "{query}"
+
+            Use previous context if needed to understand references like
+            'same time', 'that meeting', or 'tomorrow's event'.
+        """
+        actions = self.interpret_query(contextual_query)
+
         if not actions:
-            return "I couldn't understand your request."
+            response_text = "I couldn't understand your request."
+            self.memory.add("assistant", response_text)
+            return response_text
 
         responses = []
         for action in actions:
@@ -243,5 +258,6 @@ class CalendarAgent:
             elif intent == "delete":
                 summary = action.get("summary", "")
                 responses.append(self.delete_event(summary))
-
+        final_response = "\n\n".join(responses)
+        self.memory.add("assistant", final_response)
         return "\n\n".join(responses)

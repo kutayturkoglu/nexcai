@@ -1,13 +1,14 @@
 from core.orchestrator.router import route_query
 from core.agents.weather.agent import WeatherAgent
 from core.agents.general.agent import GeneralAgent
-
+from core.agents.calendar.agent import CalendarAgent
 def main():
     print("🤖 NEXCAI Modular Assistant Ready")
     print("(type 'exit' to quit)\n")
 
     weather_agent = WeatherAgent()
     general_agent = GeneralAgent()
+    calendar_agent = CalendarAgent()
 
     while True:
         query = input("You: ")
@@ -20,6 +21,8 @@ def main():
 
         if intent == "weather":
             reply = weather_agent.run(query)
+        elif intent == "calendar":
+            reply = calendar_agent.run(query)
         else:
             reply = general_agent.run(query)
 

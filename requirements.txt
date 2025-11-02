@@ -26,3 +26,6 @@ torch==2.4.1
 torchvision
 torchaudio
 
+# Google Calendar Integration
+google-api-python-client
+dateparser

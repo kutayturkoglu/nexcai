@@ -22,3 +22,8 @@ logs/
 models/
 data/
 pulseaudio/
+
+core/agents/calendar/credentials/credentials.json
+token.json
+tokens/google_calendar.json
+

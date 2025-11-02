@@ -1,26 +1,30 @@
-from core.llm_interface import ask_ollama
-import sounddevice as sd
-import soundfile as sf
+from core.orchestrator.router import route_query
+from core.agents.weather.agent import WeatherAgent
+from core.agents.general.agent import GeneralAgent
 
-def record_audio(filename="input.wav", duration=6, samplerate=16000):
-    print("🎙️ Speak now...")
-    data = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype="int16")
-    sd.wait()
-    sf.write(filename, data, samplerate)
-    print("✅ Recorded:", filename)
-    return filename
+def main():
+    print("🤖 NEXCAI Modular Assistant Ready")
+    print("(type 'exit' to quit)\n")
 
-def conversation_loop():
+    weather_agent = WeatherAgent()
+    general_agent = GeneralAgent()
+
     while True:
-        text = input("You: ")
-
-        if any(word in text.lower() for word in ["exit", "quit", "stop"]):
-            print("👋 Goodbye!")
+        query = input("You: ")
+        if query.lower() in ["exit", "quit", "q"]:
+            print("Goodbye!")
             break
 
-        reply = ask_ollama(f"User said {text}\nReply naturally as NEXAI.")
-        print("NEXAI: ", reply)
+        intent = route_query(query)
+        print(f"[Router → {intent.upper()}]")
+
+        if intent == "weather":
+            reply = weather_agent.run(query)
+        else:
+            reply = general_agent.run(query)
+
+        print("NEXCAI:", reply)
+        print()
 
 if __name__ == "__main__":
-    print("🧠 NEXA is online. Say something...")
-    conversation_loop()
+    main()

@@ -27,3 +27,5 @@ core/agents/calendar/credentials/credentials.json
 token.json
 tokens/google_calendar.json
 
+core/memory/memories.json
+core/memory/faiss_index.bin
